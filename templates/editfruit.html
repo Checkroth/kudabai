@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+    <h1>果物編集</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ edit_form }}
+        <br />
+        <br />
+        <button class="btn btn-default" type="submit">編集</button>
+    </form>
+</main>
+{% endblock %}

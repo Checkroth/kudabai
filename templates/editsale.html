@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+    <h1>販売情報編集</h1>
+    {% if edit_form.errors %}
+    {% for field in edit_form %}
+    {% for error in field.errors %}
+    <div class="bg-danger" role="alert">
+        {{ error|escape }}
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ edit_form }}
+        <br />
+        <br />
+        <button class="btn btn-default" type="submit">編集</button>
+    </form>
+</main>
+{% endblock %}

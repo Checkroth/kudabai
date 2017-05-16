@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+    <h1>果物マスタ管理</h1>
+    <a href="{% url 'top' %}">TOP</a> ＞果物マスタ管理
+    <br />
+    <div class="row">
+        <div class="col-md-1">
+            ID
+        </div>
+        <div class="col-md-3">
+            名称
+        </div>
+        <div class="col-md-2">
+            単価
+        </div>
+        <div class="col-md-3">
+            登録日時
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+    {% for f in fruits %}
+    <div class="mfruit row">
+        <div class="fid col-md-1">
+            {{ f.id }}
+        </div>
+        <div class="fname col-md-3">
+            {{ f.name }}
+        </div>
+        <div class="fprice col-md-2">
+            {{ f.unit_price }}
+        </div>
+        <div class="fdate col-md-3">
+            {{ f.reg_date|date:"Y-m-d H:i"}}
+        </div>
+        <div class="links col-md-3">
+            <a href="{% url 'edit_fruit' f.id %}">編集</a>
+            <br />
+            <a href="{% url 'delete_fruit' f.id %}">削除</a>
+        </div>
+    </div>
+    {% if not forloop.last %}
+    <hr />
+    {% endif %}
+    {% endfor %}
+    <a href="{% url 'add_fruit' %}" class="btn btn-default">新規追加</a>
+
+</main>
+{% endblock %}

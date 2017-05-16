@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    ユーザ名、またはパスワードが間違ってます.
+</div>
+{% endif %}
+
+<main>
+    <div class="row">
+        <h1>ログイン</h1>
+    </div>
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="row">
+        ユーザ名　   {{ form.username }}
+    </div>
+    <br />
+    <div class="row">
+        パスワード   {{ form.password }}
+    </div>
+    <br />
+
+    <input type="submit" class="btn btn-default" value="ログイン" />
+    <!--<input type="hidden" name="next" value="{{ next }}" />p-->
+    </form>
+</main>
+
+{% endblock %}

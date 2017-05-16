@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+    <h1>販売統計情報</h1>
+    <a href="{% url 'top' %}">TOP</a> ＞販売統計情報
+    <br />
+    <div class="row">
+        <h2>累計</h2>
+        <h3>{{ sales_total.earnings__sum }}円</h3>
+    </div>
+    <br />
+    <div class="row">
+        <h3>月別</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><h4>月</h4></div>
+        <div class="col-md-3"><h4>売り上げ</h4></div>
+        <div class="col-md-6"><h4>内訳</h4></div>
+    </div>
+    <hr />
+    {% for month, values in months.items %}
+    <div class="row">
+        <div class="col-md-3">
+            {{ month|date:"Y/m" }}
+        </div>
+        <div class="col-md-3">
+            {% with values|last as last %}
+                {{ last.grand_total }}
+            {% endwith %}
+        </div>
+        <div class="col-md-6">
+            {% for sale in values %}
+            {% if not forloop.last %}
+            {{ sale.fruit }}: {{ sale.sales_value }}円({{sale.count}})
+            {% endif %}
+            {% endfor %}
+        </div>
+
+    </div>
+    {% if not forloop.last %}
+    <hr />
+    {% endif %}
+    {% endfor %}
+    <br />
+    <div class="row">
+        <h3>日別</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><h4>日</h4></div>
+        <div class="col-md-3"><h4>売り上げ</h4></div>
+        <div class="col-md-6"><h4>内訳</h4></div>
+    </div>
+    <hr />
+    {% for day, values in days.items %}
+    <div class="row">
+        <div class="col-md-3">
+            {{ day|date:"Y/m/d" }}
+        </div>
+        <div class="col-md-3">
+            {% with values|last as last %}
+                {{ last.grand_total }}
+            {% endwith %}
+        </div>
+        <div class="col-md-6">
+            {% for sale in values %}
+            {% if not forloop.last %}
+            {{ sale.fruit }}: {{ sale.sales_value }}円({{ sale.count }})
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% if not forloop.last %}
+    <hr />
+    {% endif %}
+    {% endfor %}
+</main>
+{% endblock %}
