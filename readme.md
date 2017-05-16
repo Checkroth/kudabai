@@ -1,0 +1,3 @@
+- sqlite3を利用しています。
+- ユーザは、Djangoアドミンでつくるか、superuserを使う
+- Bootstrap CDNを利用しているので、インターネットが必要です。
