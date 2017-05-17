@@ -25,7 +25,7 @@ SECRET_KEY = '3=7u=nsg*+8duxj(zmu7^$9+&d&%f@)+^$-1b_fq(icbfp#5vx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lit-tundra-58799.herokuapp.com',]
+ALLOWED_HOSTS = ['lit-tundra-58799.herokuapp.com', '127.0.0.1',]
 
 
 # Application definition
