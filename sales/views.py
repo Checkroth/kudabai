@@ -150,6 +150,9 @@ def sales_stats(request):
     # 全ての計算
     sales_total = sales.models.Sale.objects.all() \
         .aggregate(Sum('earnings'))
+    if not sales_total:
+        sales_total = 0
+    
 
     return render(request, "salesstats.html", {
         'months': month_groups,
