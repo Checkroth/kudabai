@@ -86,61 +86,66 @@ def del_sale(request, sale_id):
 
 def sales_stats(request):
     # 月別の計算
-    trunc_month = sales.models.Sale.objects \
-        .annotate(month=TruncMonth('sales_date'))
+    if sales.models.Sale.objects.all().count() > 0:
+        trunc_month = sales.models.Sale.objects \
+            .annotate(month=TruncMonth('sales_date'))
 
-    third_month = trunc_month \
-        .values('month') \
-        .order_by('-month') \
-        .distinct()[:3]
+        third_month = trunc_month \
+            .values('month') \
+            .order_by('-month') \
+            .distinct()[:3]
 
-    # len(third_month) used because third_month.last() gets outside queryset
-    monthly = trunc_month \
-        .filter(month__gte=third_month[len(third_month)-1]['month']) \
-        .values('month', 'fruit') \
-        .annotate(total=Sum('earnings'), c=Sum('number'))
+        # len(third_month) used because third_month.last() gets outside queryset
+        monthly = trunc_month \
+            .filter(month__gte=third_month[len(third_month)-1]['month']) \
+            .values('month', 'fruit') \
+            .annotate(total=Sum('earnings'), c=Sum('number'))
 
-    mgs = OrderedDict()
-    for m in monthly:
-        mgs.setdefault(m['month'], []).append({
-            'fruit': fruits.models.Fruit.objects.get(pk=m['fruit']), 
-            'count': m['c'], 
-            'sales_value': m['total']
+        mgs = OrderedDict()
+        for m in monthly:
+            mgs.setdefault(m['month'], []).append({
+                'fruit': fruits.models.Fruit.objects.get(pk=m['fruit']), 
+                'count': m['c'], 
+                'sales_value': m['total']
+                })
+        month_groups = OrderedDict(sorted(mgs.items(), reverse=True))
+        
+        for m in month_groups:
+            month_groups[m].append({
+                'grand_total': sum(month['sales_value'] for month in month_groups[m])
             })
-    month_groups = OrderedDict(sorted(mgs.items(), reverse=True))
-    
-    for m in month_groups:
-        month_groups[m].append({
-            'grand_total': sum(month['sales_value'] for month in month_groups[m])
-        })
 
 
-    # 日別の計算
-    trunc_day = sales.models.Sale.objects \
-        .annotate(day=TruncDate('sales_date'))
+        # 日別の計
+        trunc_day = sales.models.Sale.objects \
+            .annotate(day=TruncDate('sales_date'))
 
-    third_day = trunc_day \
-        .values('day') \
-        .order_by('-day') \
-        .distinct()[:3]
+        third_day = trunc_day \
+            .values('day') \
+            .order_by('-day') \
+            .distinct()[:3]
 
-    daily = trunc_day \
-        .filter(day__gte=third_day[len(third_day)-1]['day']) \
-        .values('day', 'fruit') \
-        .annotate(total=Sum('earnings'), c=Sum('number')) \
-        .order_by('-sales_date')
+        daily = trunc_day \
+            .filter(day__gte=third_day[len(third_day)-1]['day']) \
+            .values('day', 'fruit') \
+            .annotate(total=Sum('earnings'), c=Sum('number')) \
+            .order_by('-sales_date')
 
-    dgs = OrderedDict()
-    for d in daily:
-        dgs.setdefault(d['day'], []).append({
-            'fruit': fruits.models.Fruit.objects.get(pk=d['fruit']),
-            'count': d['c'],
-            'sales_value': d['total']
-        })
-    day_groups = OrderedDict(sorted(dgs.items(), reverse=True))
+        dgs = OrderedDict()
+        for d in daily:
+            dgs.setdefault(d['day'], []).append({
+                'fruit': fruits.models.Fruit.objects.get(pk=d['fruit']),
+                'count': d['c'],
+                'sales_value': d['total']
+            })
+        day_groups = OrderedDict(sorted(dgs.items(), reverse=True))
 
-    for d in day_groups:
-        day_groups[d].append({'grand_total': sum(day['sales_value'] for day in day_groups[d])})
+        for d in day_groups:
+            day_groups[d].append({'grand_total': sum(day['sales_value'] for day in day_groups[d])})
+    else:
+        month_groups = {}
+        day_groups = {}
+
 
     # 全ての計算
     sales_total = sales.models.Sale.objects.all() \
